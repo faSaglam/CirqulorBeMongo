@@ -1,0 +1,88 @@
+﻿using CirqulorBeMongo.Models;
+using CirqulorBeMongo.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CirqulorBeMongo.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NameOfMaterialController : ControllerBase
+    {
+        private readonly NameOfMaterialService _service;
+        private readonly SourceOfMaterialService _somService;
+        public NameOfMaterialController(NameOfMaterialService service, SourceOfMaterialService somService)
+        {
+            _service = service;
+            _somService = somService;
+        }
+        [HttpGet]
+        public async Task<List<NameOfMaterial>> GetAsync()
+        {
+            var nomList = await _service.GetAsyc();
+            return nomList;
+
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<NameOfMaterial>> GetAsyncById(string id)
+        {
+            var nom = await _service.GetAsyncById(id);
+            if(nom == null) 
+            { 
+                return NotFound(); 
+            }
+            var tempList = new List<SourceOfMaterial>();
+            if(nom.SourceOfMaterials != null)
+            {
+                foreach (var sourceOfMaterialId in nom.SourceOfMaterials)
+                {
+                    if (sourceOfMaterialId != null)
+                    {
+                        var som = await _somService.GetAsyncById(sourceOfMaterialId);
+                        tempList.Add(som);
+                    }
+                }
+            }
+        
+            nom.SourceOfMaterialList = tempList;
+            return nom;
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            var nom = await _service.GetAsyncById(id);
+            if(nom != null)
+            {
+                return NotFound();
+            }
+          
+
+            await _service.RemoveAsync(id);
+            return NoContent();
+
+
+        }
+        [HttpPost]
+        public async Task<ActionResult<NameOfMaterial>> PostAsync(NameOfMaterial nom)
+        {
+            if(!ModelState.IsValid) 
+            {
+                return BadRequest();
+            }
+            await _service.CreateAsync(nom);
+            return Ok(nom);
+        }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<NameOfMaterial>> UpdateAsync(string id , NameOfMaterial nom)
+        {
+            var nomOrigin = await _service.GetAsyncById(id);
+            if (nomOrigin == null)
+            {
+                return NotFound();
+            }
+            await _service.UpdateAsync(id, nom);
+            return Ok(nom);
+        }
+
+    }
+}
