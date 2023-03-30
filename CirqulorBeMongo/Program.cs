@@ -13,7 +13,7 @@ builder.Services.Configure<CirqulorDatabaseSettings>(builder.Configuration.GetSe
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddMongoDbStores<ApplicationUser,ApplicationRole,Guid>
-    ("mongodb+srv://cirqulor:cirqulor@cirqulor.wckody9.mongodb.net/?retryWrites=true&w=majority", "CirqulorDb")
+    ("mongodb+srv://cirqulor:sabfqTduXqlVi01n@cirqulor.wckody9.mongodb.net/?retryWrites=true&w=majority", "CirqulorDb")
     .AddDefaultTokenProviders();
 
 
