@@ -20,6 +20,8 @@ namespace CirqulorBeMongo.Controllers
             RoleManager<ApplicationRole> roleManager ,
             SourceOfMaterialService sourceService,
             NameOfMaterialService nameOfMaterialService
+            //,
+            //UserService userService
             )
         {
             _userManager = userManager;
@@ -28,6 +30,13 @@ namespace CirqulorBeMongo.Controllers
             _nameOfMaterialService = nameOfMaterialService;
             //_userService = userService;
         }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var userList = await _userService.GetAsync();
+        //    return Ok(userList);
+
+        //}
         [HttpPost]
         public async Task<IActionResult> CreateAsync(User user)
         {
@@ -91,20 +100,20 @@ namespace CirqulorBeMongo.Controllers
             if (user == null) { return NotFound(); };
             var tempList = new List<SourceOfMaterial>();
 
-            if(user.SourceOfMaterials is not null)
-            {
-                foreach (var somId in user.SourceOfMaterials)
-                {
-                    if (somId != null)
-                    {
-                        var som = await _sourceService.GetAsyncById(somId);
-                        tempList.Add(som);
-                    }
+            //if(user.SourceOfMaterials is not null)
+            //{
+            //    foreach (var somId in user.SourceOfMaterials)
+            //    {
+            //        if (somId != null)
+            //        {
+            //            var som = await _sourceService.GetAsyncById(somId);
+            //            tempList.Add(som);
+            //        }
                     
-                }
-                user.SourceOfMaterialList = tempList;
+            //    }
+            //    user.SourceOfMaterialList = tempList;
 
-            }
+            //}
             return Ok(user);
         }
         [HttpGet("nameofmaterial/{id}")]
@@ -113,22 +122,22 @@ namespace CirqulorBeMongo.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) { return NotFound(); };
             var tempList = new List<NameOfMaterial>();
-            if(user.NameOfMaterials is not null)
-            {
-                foreach(var nomId in user.NameOfMaterials)
-                {
-                    if(nomId != null) 
-                    {
-                        var nom = await _nameOfMaterialService.GetAsyncById(nomId);
-                        if(nom != null)
-                        {
-                            tempList.Add(nom);
-                        }
+            //if(user.NameOfMaterials is not null)
+            //{
+            //    foreach(var nomId in user.NameOfMaterials)
+            //    {
+            //        if(nomId != null) 
+            //        {
+            //            var nom = await _nameOfMaterialService.GetAsyncById(nomId);
+            //            if(nom != null)
+            //            {
+            //                tempList.Add(nom);
+            //            }
                         
-                    }
-                }
-                user.NameOfMaterialList = tempList;
-            }
+            //        }
+            //    }
+            //    user.NameOfMaterialList = tempList;
+            //}
             return Ok(user);
         }
         [HttpPut("addNameOfMaterial/{id}")]
@@ -139,7 +148,7 @@ namespace CirqulorBeMongo.Controllers
             {
                 return NotFound(); 
             }
-            userOrigin.NameOfMaterials = newMaterial;
+            //userOrigin.NameOfMaterials = newMaterial;
             var result = await _userManager.UpdateAsync(userOrigin);
             if(result.Succeeded)
             {
@@ -168,7 +177,7 @@ namespace CirqulorBeMongo.Controllers
             {
                 return NotFound();
             }
-            userOrigin.SourceOfMaterials = newSource;
+            //userOrigin.SourceOfMaterials = newSource;
             var result = await _userManager.UpdateAsync(userOrigin);
             if (result.Succeeded)
             {

@@ -29,20 +29,20 @@ namespace CirqulorBeMongo.Controllers
         {
             var som = await _somService.GetAsyncById(id);
             var tempList = new List<ApplicationUser>();
-            if(som.Users == null)
-            {
-                return som;
-            }
-            foreach(var userId in som.Users)
-            {
-                if(userId != null)
-                {
-                    var user = await _userManager.FindByIdAsync(userId);
-                    tempList.Add(user);
+            //if(som.Users == null)
+            //{
+            //    return som;
+            //}
+            //foreach(var userId in som.Users)
+            //{
+            //    if(userId != null)
+            //    {
+            //        var user = await _userManager.FindByIdAsync(userId);
+            //        tempList.Add(user);
                     
-                }
-            }
-            som.UserList = tempList;
+            //    }
+            //}
+            //som.UserList = tempList;
             return som;
         }
         [HttpDelete("{id}")]

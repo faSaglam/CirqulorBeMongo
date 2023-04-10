@@ -15,6 +15,12 @@ namespace CirqulorBeMongo.Models
         public string? BioBasedMaterials { get; set; }
 
         public string? BioBasedMaterialName { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public List<string>? NameOfMaterials { get; set; }
+
+        [BsonIgnore]
+        public List<NameOfMaterial>? NameOfMaterialList { get; set; }
+
 
         [BsonRepresentation(BsonType.ObjectId)]
         public List<string> ?BaseOfMaterials { get; set; }

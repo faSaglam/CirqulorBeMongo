@@ -3,6 +3,7 @@ using CirqulorBeMongo.Services;
 using CirqulorBeMongo.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace CirqulorBeMongo.Controllers
 {
@@ -29,15 +30,19 @@ namespace CirqulorBeMongo.Controllers
             _bioBasedMaterialService = bioBasedMaterialService;
         }
         [HttpGet]
-        public async Task<List<NameOfMaterial>> GetAsync()
+        public async Task<ActionResult<List<NameOfMaterial>>> GetAsync()
         {
            var nomList = await _service.GetAsyc();
            foreach(var item in nomList)
             {
+
               
                 var nom = await _service.GetAsyncById(item.Id);
+             
                 var baseId = nom.BaseOfMaterials;
+             
                 var bom = await _baseOfMaterialService.GetByIdAsync(baseId);
+             
                 var bomName = bom.Name;
                 item.BaseOfMaterialsName = bomName;
                 
@@ -56,7 +61,27 @@ namespace CirqulorBeMongo.Controllers
             return nomList;
 
         }
+        [HttpGet("/type/{id}")]
+        
+        public async Task<List<NameOfMaterial>> GetAsyncByTypeId(string? id)
+        {
+            var nomlist = await _service.GetAsyc();
+            var templist = new List<NameOfMaterial>();
+            foreach (var item in nomlist)
+            {
        
+                var nom = await _service.GetAsyncById(item.Id);
+                if (nom.TypeOfMaterials == id)
+                {
+                    templist.Add(nom);
+                }
+
+            }
+            nomlist = templist;
+            return nomlist;
+        }
+
+
         [HttpGet]
         [Route("nonquery")]
         public async Task<List<NameOfMaterial>> GetAsyncWithBioBase()

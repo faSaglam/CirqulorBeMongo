@@ -15,10 +15,10 @@ namespace CirqulorBeMongo.Models
 
         public string? NameOfMaterialName { get; set; }
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public List<string>? Users { get; set; }
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public List<string>? Users { get; set; }
 
-        [BsonIgnore]
-        public List<ApplicationUser>? UserList { get; set; }
+        //[BsonIgnore]
+        //public List<ApplicationUser>? UserList { get; set; }
     }
 }

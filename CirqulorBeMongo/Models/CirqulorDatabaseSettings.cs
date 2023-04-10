@@ -19,5 +19,6 @@ namespace CirqulorBeMongo.Models
         public string ProductionCollectionName { get; set; } = null!;
         public string ApplicationCollectionName { get; set; } = null!;
         public string UserCollectionName { get; set; } = null!; 
+        public string MaterialsOfProducerCollectionName { get; set; } = null!; 
     }
 }

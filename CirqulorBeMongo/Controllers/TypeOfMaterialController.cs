@@ -12,56 +12,76 @@ namespace CirqulorBeMongo.Controllers
         private readonly TypeOfMaterialService _tomService;
         private readonly BioBasedMaterialService _bbmService;
         private readonly BaseOfMaterialService _bomService;
-        public TypeOfMaterialController(TypeOfMaterialService tomService , BioBasedMaterialService bbmService , BaseOfMaterialService bomServie)
+        private readonly NameOfMaterialService _nameOfMaterialService;
+        public TypeOfMaterialController(
+            TypeOfMaterialService tomService ,
+            BioBasedMaterialService bbmService , 
+            BaseOfMaterialService bomServie,
+            NameOfMaterialService nomService)
         {
             _tomService = tomService;
             _bbmService = bbmService;
             _bomService = bomServie;
+            _nameOfMaterialService = nomService;
         }
         [HttpGet]
         public async Task<List<TypeOfMaterial>> GetAsync()
         {
             var typeOfMaterialList = await _tomService.GetAsync();
-            foreach(var typeOfMaterial in typeOfMaterialList)
-            {
-                var tom = await _tomService.GetByIdAsync(typeOfMaterial.Id);
-                var bbmId = tom.BioBasedMaterials;
-                var bbm = await _bbmService.GetByIdAsync(bbmId);
-                if(bbm != null)
-                {
-                    typeOfMaterial.BioBasedMaterialName = bbm.Name;
-                }
+            //foreach(var typeOfMaterial in typeOfMaterialList)
+            //{
+            //    var tom = await _tomService.GetByIdAsync(typeOfMaterial.Id);
+            //    var bbmId = tom.BioBasedMaterials;
+            //    var bbm = await _bbmService.GetByIdAsync(bbmId);
+            //    if(bbm != null)
+            //    {
+            //        typeOfMaterial.BioBasedMaterialName = bbm.Name;
+            //    }
                 
 
-            }
+            //}
+      
             return typeOfMaterialList;
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<TypeOfMaterial>> GetById(string id)
         {
-            var typeOfMaterial = await _tomService.GetByIdAsync(id);
-            if(typeOfMaterial == null)
-            {
-                return NotFound();
-            }
+            //var typeOfMaterial = await _tomService.GetByIdAsync(id);
+            //if(typeOfMaterial == null)
+            //{
+            //    return NotFound();
+            //}
             
-            string bbmId = typeOfMaterial.BioBasedMaterials;
-            var bbm = await _bbmService.GetByIdAsync(bbmId);
-            typeOfMaterial.BioBasedMaterialName = bbm.Name;
+            //string bbmId = typeOfMaterial.BioBasedMaterials;
+            //var bbm = await _bbmService.GetByIdAsync(bbmId);
+            //typeOfMaterial.BioBasedMaterialName = bbm.Name;
 
-            var tempList = new List<BaseOfMaterial>();
-            foreach(var baseOfMaterialId in typeOfMaterial.BaseOfMaterials)
-            {
-                if(baseOfMaterialId != null)
-                {
-                    var baseOfMaterial = await _bomService.GetByIdAsync(baseOfMaterialId);
-                    tempList.Add(baseOfMaterial);
+            //var tempList = new List<BaseOfMaterial>();
+            //foreach(var baseOfMaterialId in typeOfMaterial.BaseOfMaterials)
+            //{
+            //    if(baseOfMaterialId != null)
+            //    {
+            //        var baseOfMaterial = await _bomService.GetByIdAsync(baseOfMaterialId);
+            //        tempList.Add(baseOfMaterial);
 
-                }
+            //    }
                 
+            //}
+            //typeOfMaterial.BaseOfMaterialList = tempList;
+            var typeOfMaterial = await _tomService.GetByIdAsync(id);
+            if(typeOfMaterial == null) { return NotFound(); }   
+            var tempList = new List<NameOfMaterial>();
+            if(typeOfMaterial.NameOfMaterials is null)
+            {
+                return NoContent ();
             }
-            typeOfMaterial.BaseOfMaterialList = tempList;
-
+            foreach(var nomId in typeOfMaterial.NameOfMaterials)
+            {
+                var nameOfMaterial = await _nameOfMaterialService.GetAsyncById(nomId);
+                if(nameOfMaterial == null) { return NoContent (); }
+                tempList.Add(nameOfMaterial);
+            }
+            typeOfMaterial.NameOfMaterialList = tempList;
 
             return typeOfMaterial;
         }

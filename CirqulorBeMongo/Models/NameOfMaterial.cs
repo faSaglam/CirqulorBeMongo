@@ -29,6 +29,11 @@ namespace CirqulorBeMongo.Models
         [BsonIgnore]
         public List<SourceOfMaterial>? SourceOfMaterialList { get; set; }
 
+        [BsonRepresentation(BsonType.ObjectId)]
+        public List<string>? Users { get; set; }
+
+        //[BsonIgnore]
+        //public List<ApplicationUser>? UserList { get; set; }
 
 
 

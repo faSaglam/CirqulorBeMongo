@@ -18,18 +18,21 @@ namespace CirqulorBeMongo.Models
         public string? PhotoUrl { get; set; }
         public string? Country { get; set; }
         public string? Address { get; set; }
-        [BsonRepresentation(BsonType.ObjectId)]
-        public List<string>? SourceOfMaterials { get; set; }
+        #region 
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public List<string>? SourceOfMaterials { get; set; }
 
-        [BsonIgnore]
-        public List<SourceOfMaterial>? SourceOfMaterialList { get; set; }
+        //[BsonIgnore]
+        //public List<SourceOfMaterial>? SourceOfMaterialList { get; set; }
 
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public List<string>? NameOfMaterials { get; set; }
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public List<string>? NameOfMaterials { get; set; }
 
-        [BsonIgnore]
-        public List<NameOfMaterial>? NameOfMaterialList { get; set; }
+        //[BsonIgnore]
+        //public List<NameOfMaterial>? NameOfMaterialList { get; set; }
+        #endregion
+
 
 
     }
