@@ -7,7 +7,7 @@ namespace CirqulorBeMongo.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }  
+        public string? Id { get; set; }
         public string? Name { get; set; }
         [BsonRepresentation(BsonType.ObjectId)]
         public string? BaseOfMaterials { get; set; }
@@ -29,12 +29,21 @@ namespace CirqulorBeMongo.Models
         [BsonIgnore]
         public List<SourceOfMaterial>? SourceOfMaterialList { get; set; }
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public List<string>? Users { get; set; }
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public List<string>? Users { get; set; }
 
         //[BsonIgnore]
         //public List<ApplicationUser>? UserList { get; set; }
+        // [BsonRepresentation(BsonType.ObjectId)]
+        // public List<string>? Suppliers { get; set; }
 
+        // [BsonIgnore]
+        //public List<ApplicationUser>? SupplierList { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public List<string>? MaterialOfSuppliers { get; set; }
+        [BsonIgnore]
+        public List<MaterialsOfProducer>? MaterialOfSuppliersList { get;set;}
 
 
 

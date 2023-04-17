@@ -24,5 +24,14 @@ namespace CirqulorBeMongo.Services
         public async Task CreateAsync(MaterialsOfProducer newMop) => await _mopCollection.InsertOneAsync(newMop);
         public async Task UpdateAsync(string id, MaterialsOfProducer updateMop) => await _mopCollection.ReplaceOneAsync(x => x.Id == id, updateMop);
         public async Task RemoveAsync(string id) => await _mopCollection.DeleteOneAsync(x => x.Id == id);
+
+        public async Task<List<MaterialsOfProducer>> GetAsyncListByNomId(string name , string producerName)
+        {
+            var filter1 = Builders<MaterialsOfProducer>.Filter.Eq(x => x.NameOfMaterialName, name);
+            var filter2 = Builders<MaterialsOfProducer>.Filter.Eq(x=>x.ProducerName, producerName);
+            var combineFilter = Builders<MaterialsOfProducer>.Filter.And(new[] { filter1, filter2 });
+            var results = await _mopCollection.Find(combineFilter).ToListAsync();
+            return results;
+        }
     }
 }

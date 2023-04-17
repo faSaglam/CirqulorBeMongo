@@ -2,6 +2,7 @@
 using CirqulorBeMongo.Services;
 using CirqulorBeMongo.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
@@ -16,18 +17,28 @@ namespace CirqulorBeMongo.Controllers
         private readonly BaseOfMaterialService _baseOfMaterialService;
         private readonly TypeOfMaterialService _typeOfMaterialService;
         private readonly BioBasedMaterialService _bioBasedMaterialService;
+        private readonly MaterialsOfProducerService _materialsOfProducerService;
+        private readonly UserManager<ApplicationUser> _userManager;
         public NameOfMaterialController(
             NameOfMaterialService service, 
             SourceOfMaterialService somService,
             BaseOfMaterialService baseOfMaterialService,
             TypeOfMaterialService typeOfMaterialService,
-            BioBasedMaterialService bioBasedMaterialService)
+            BioBasedMaterialService bioBasedMaterialService,
+            MaterialsOfProducerService materialsOfProducerService,
+            UserManager<ApplicationUser> userManager
+            )
+
+
+
         {
             _service = service;
             _somService = somService;
             _baseOfMaterialService = baseOfMaterialService;
             _typeOfMaterialService = typeOfMaterialService;
             _bioBasedMaterialService = bioBasedMaterialService;
+            _materialsOfProducerService = materialsOfProducerService;
+            _userManager = userManager;
         }
         [HttpGet]
         public async Task<ActionResult<List<NameOfMaterial>>> GetAsync()
@@ -90,6 +101,20 @@ namespace CirqulorBeMongo.Controllers
             return nomList;
             
         }
+        [HttpGet]
+        [Route("ViaTypeName")]
+        public async Task<List<NameOfMaterial>> GetAsychWithType()
+        {
+            var nomList = await _service.GetAsyc();
+            foreach (var item in nomList)
+            {
+                var typeId = item.TypeOfMaterials;
+                var type = await _typeOfMaterialService.GetByIdAsync(typeId);
+                item.TypeOfMaterialsName = type.Name;
+
+            }
+            return nomList;
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<NameOfMaterial>> GetAsyncById(string id)
         {
@@ -98,20 +123,38 @@ namespace CirqulorBeMongo.Controllers
             { 
                 return NotFound(); 
             }
-            var tempList = new List<SourceOfMaterial>();
-            if(nom.SourceOfMaterials != null)
+            #region sourceOfMaterial
+            //var tempList = new List<SourceOfMaterial>();
+            //if(nom.SourceOfMaterials != null)
+            //{
+            //    foreach (var sourceOfMaterialId in nom.SourceOfMaterials)
+            //    {
+            //        if (sourceOfMaterialId != null)
+            //        {
+            //            var som = await _somService.GetAsyncById(sourceOfMaterialId);
+            //            tempList.Add(som);
+            //        }
+            //    }
+            //}
+
+            //nom.SourceOfMaterialList = tempList;
+            #endregion
+            var tempList = new List<MaterialsOfProducer>();
+            if(nom.MaterialOfSuppliers == null)
             {
-                foreach (var sourceOfMaterialId in nom.SourceOfMaterials)
-                {
-                    if (sourceOfMaterialId != null)
-                    {
-                        var som = await _somService.GetAsyncById(sourceOfMaterialId);
-                        tempList.Add(som);
-                    }
-                }
+                return NoContent();
             }
-        
-            nom.SourceOfMaterialList = tempList;
+            foreach(var item in nom.MaterialOfSuppliers)
+            {
+                var mop = await _materialsOfProducerService.GetByIdAsync(item);
+                var mopProducer = await _userManager.FindByIdAsync(mop.Producer);
+                mop.ProducerName = mopProducer.UserName;
+                
+                tempList.Add(mop);
+               
+            }
+            nom.MaterialOfSuppliersList = tempList;
+   
             return nom;
         }
         [HttpDelete("{id}")]

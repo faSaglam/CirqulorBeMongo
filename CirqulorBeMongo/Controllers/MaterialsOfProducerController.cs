@@ -1,6 +1,7 @@
 ﻿using CirqulorBeMongo.Models;
 using CirqulorBeMongo.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CirqulorBeMongo.Controllers
@@ -10,9 +11,17 @@ namespace CirqulorBeMongo.Controllers
     public class MaterialsOfProducerController : ControllerBase
     {
         private readonly MaterialsOfProducerService _mopService;
-        public MaterialsOfProducerController(MaterialsOfProducerService mopService)
+        private readonly NameOfMaterialService _nameOfMaterialService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public MaterialsOfProducerController(
+            MaterialsOfProducerService mopService,
+            NameOfMaterialService nameOfMaterialService,
+            UserManager<ApplicationUser> userManager
+            )
         {
             _mopService = mopService;
+            _nameOfMaterialService = nameOfMaterialService;
+            _userManager = userManager;
         }
         [HttpGet]
         public async Task<List<MaterialsOfProducer>> GetListAsync()
@@ -24,7 +33,41 @@ namespace CirqulorBeMongo.Controllers
         public async Task<ActionResult<MaterialsOfProducer>> GetById(string id)
         {
             var mop = await _mopService.GetByIdAsync(id);
+            var producer = await _userManager.FindByIdAsync(mop.Producer);
+            mop.ProducerName = producer.UserName;
+            var nameofmaterial = await _nameOfMaterialService.GetAsyncById(mop.NameOfMaterial);
+            mop.NameOfMaterialName = nameofmaterial.Name;
+
+            
             return Ok(mop); 
+
+        }
+        [HttpGet("/nameofmaterials/{name}/producer/{producername}")]
+        public async Task<List<MaterialsOfProducer>> GetListByNomId(string name,string producername)
+        {
+            var mopList = await _mopService.GetAsync();
+            var tempList = new List<MaterialsOfProducer>();
+            foreach(var item in mopList)
+            {
+                if (item.Id != null)
+                {
+                    var mop = await _mopService.GetByIdAsync(item.Id);
+                    var nom = await _nameOfMaterialService.GetAsyncById(mop.NameOfMaterial);
+                    mop.NameOfMaterialName = nom.Name;
+                    var producer = await _userManager.FindByNameAsync(producername);
+                    if(producer == null) {  mop.ProducerName = "no user"; }
+                    mop.ProducerName = producer.UserName;
+                    if(mop.NameOfMaterialName == name && mop.ProducerName == producername)
+                    {
+                        tempList.Add(mop);
+                    }
+                 
+                }
+             
+            }
+            mopList = tempList;
+            return mopList.ToList();
+            
 
         }
         [HttpPost]
