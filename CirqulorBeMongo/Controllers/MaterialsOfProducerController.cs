@@ -33,6 +33,12 @@ namespace CirqulorBeMongo.Controllers
         public async Task<ActionResult<MaterialsOfProducer>> GetById(string id)
         {
             var mop = await _mopService.GetByIdAsync(id);
+            if(mop == null ) { return NotFound(); }
+            if(mop.Producer == null)
+            {
+                return NotFound();
+
+            }
             var producer = await _userManager.FindByIdAsync(mop.Producer);
             mop.ProducerName = producer.UserName;
             var nameofmaterial = await _nameOfMaterialService.GetAsyncById(mop.NameOfMaterial);

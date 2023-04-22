@@ -30,6 +30,10 @@ namespace CirqulorBeMongo.Controllers
             }
 
             var tempList = new List<TypeOfMaterial>();
+            if(bioBasedMaterial.TypeOfMaterials == null)
+            {
+                return NoContent();
+            }
             foreach(var typeOfMaterialId in bioBasedMaterial.TypeOfMaterials)
             {
                 var typeOfMaterial = await _tomService.GetByIdAsync(typeOfMaterialId);
