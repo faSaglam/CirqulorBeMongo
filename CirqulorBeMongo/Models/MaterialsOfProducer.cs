@@ -13,7 +13,7 @@ namespace CirqulorBeMongo.Models
         public string? Id { get; set; }
         public object? Properties { get; set; }
         public string? Notes { get; set; }
-
+        public string? photoUrl { get; set; }   
        // name of material
         [BsonRepresentation(BsonType.ObjectId)]
         public string? NameOfMaterial { get; set; }
