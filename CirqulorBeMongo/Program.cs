@@ -12,11 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.Configure<CirqulorDatabaseSettings>(builder.Configuration.GetSection("CirqulorDatabase"));
 
-
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddMongoDbStores<ApplicationUser,ApplicationRole,Guid>
+var connectionString = builder.Services.Configure<CirqulorDatabaseSettings>(builder.Configuration.GetSection("CirqulorDatabase"));
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
     ("mongodb+srv://cirqulor:sabfqTduXqlVi01n@cirqulor.wckody9.mongodb.net/?retryWrites=true&w=majority", "CirqulorDb")
     .AddDefaultTokenProviders();
-
 
 builder.Services.AddScoped<BioBasedMaterialService>();
 builder.Services.AddScoped<TypeOfMaterialService>();
