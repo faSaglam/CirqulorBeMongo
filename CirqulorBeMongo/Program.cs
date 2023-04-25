@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using MongoDbGenericRepository;
 
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -32,7 +35,10 @@ builder.Services.AddCors(opt=>opt.AddDefaultPolicy(x=>x.AllowAnyHeader().AllowAn
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cirqulor Backend", Version = "v1.2" }));
+
+//builder.Services.AddSwaggerGen(c=>c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cirqulor Backend", Version = "v1.2" }));
+builder.Services.AddSwaggerGen();
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
 
@@ -40,12 +46,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c=> c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cirqulor Backend V1.2"));
+    app.UseSwaggerUI();
 }
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors();
-
+app.MapGet("/hello",()=>"Hello");
 app.MapControllers();
 
 app.Run();

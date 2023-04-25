@@ -1,0 +1,21 @@
+
+{
+    "region" : "eu-north-1",
+    "profile" : "faSaglam",
+    "configuration" : "Release",
+    "framework"     : "net6.0",
+    "function-name" : "CirqulorMongo",
+    "function-description" : "",
+    "package-type"         : "Zip",
+    "function-handler"     : "CirqulorBeMongo",
+    "function-memory-size" : 256,
+    "function-role"        : "arn:aws:iam::824038699940:role/lambda_exec_CirqulorMongo",
+    "function-timeout"     : 15,
+    "function-runtime"     : "dotnet6",
+    "function-architecture" : "x86_64",
+    "function-subnets"      : "",
+    "function-security-groups" : "",
+    "tracing-mode"             : "PassThrough",
+    "environment-variables"    : "",
+    "image-tag"                : ""
+}
