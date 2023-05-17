@@ -27,6 +27,7 @@ namespace CirqulorBeMongo.Controllers
         public async Task<List<MaterialsOfProducer>> GetListAsync()
         {
             var mopList = await _mopService.GetAsync();
+           
             return mopList;
         }
         [HttpGet("{id}")]
@@ -39,7 +40,7 @@ namespace CirqulorBeMongo.Controllers
                 return NotFound();
 
             }
-            var producer = await _userManager.FindByIdAsync(mop.Producer);
+            var producer = await _userManager.FindByIdAsync(mop.Producer.ToString());
             mop.ProducerName = producer.UserName;
             var nameofmaterial = await _nameOfMaterialService.GetAsyncById(mop.NameOfMaterial);
             mop.NameOfMaterialName = nameofmaterial.Name;
@@ -83,7 +84,32 @@ namespace CirqulorBeMongo.Controllers
             {
                 return BadRequest();
             }
-            await _mopService.CreateAsync(newMop);
+             await _mopService.CreateAsync(newMop);
+
+            if(newMop.NameOfMaterial == null)
+            {
+                return NoContent();
+            }
+            var nameOfMaterial = await _nameOfMaterialService.GetAsyncById(newMop.NameOfMaterial);
+            if (nameOfMaterial == null)
+            {
+                return NoContent();
+            }
+            nameOfMaterial.MaterialOfSuppliers.Add(newMop.Id);
+
+            NameOfMaterial nomToUpdate = new NameOfMaterial()
+            {
+                Id = nameOfMaterial.Id,
+                Name = nameOfMaterial.Name,
+                BaseOfMaterials = nameOfMaterial.BaseOfMaterials,
+                SourceOfMaterials = nameOfMaterial.SourceOfMaterials,
+                BioBasedMaterials = nameOfMaterial.BioBasedMaterials,
+                TypeOfMaterials = nameOfMaterial.TypeOfMaterials,
+                MaterialOfSuppliers = nameOfMaterial.MaterialOfSuppliers
+            };
+            await _nameOfMaterialService.UpdateAsync(nameOfMaterial.Id, nomToUpdate);
+
+
             return Ok(newMop);
         }
         [HttpDelete("{id}")]

@@ -147,7 +147,11 @@ namespace CirqulorBeMongo.Controllers
             foreach(var item in nom.MaterialOfSuppliers)
             {
                 var mop = await _materialsOfProducerService.GetByIdAsync(item);
-                var mopProducer = await _userManager.FindByIdAsync(mop.Producer);
+                if(mop == null)
+                {
+                    return NoContent();
+                }
+                var mopProducer = await _userManager.FindByIdAsync(mop.Producer.ToString());
                 mop.ProducerName = mopProducer.UserName;
                 
                 tempList.Add(mop);
